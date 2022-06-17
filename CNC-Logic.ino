@@ -1,3 +1,5 @@
+
+
 int PushButtonPin1 = 2;
 int PushButtonPin2 = 3;
 
@@ -22,6 +24,9 @@ int relais2Set = LOW;
 int laserPWMin = 9;
 int laserPWMout = 10;
 
+int laser_in;
+int laser_out;
+
 
 void setup() {
    
@@ -36,18 +41,19 @@ void setup() {
 
   pinMode(laserPWMin, INPUT);
   pinMode(laserPWMout, OUTPUT);
+
+  //Serial.begin(9600);
 }
   // ut your setup code here, to run once:
 
+ void loop() {
 
-void invertAnalogWrite(int pin, int value)
-{
-   analogWrite(pin, value);
-   TCCR1A = TCCR1A & ~B00110000; //switch off output B
-   TCCR1A |= B00110000;  //switch on the B output with inverted output
-}
-
-void loop() { 
+  laser_in = pulseIn(laserPWMin, LOW, 5000); 
+  //Serial.write(laser_in);  
+  laser_out = map(laser_in,0,1000,0,255 );
+  analogWrite(laserPWMout, laser_out);
+  
+  //invertAnalogWrite(laserPWMout, laser_in); 
   
   int reading1 = digitalRead(PushButtonPin1);
   int reading2 = digitalRead(PushButtonPin2);
@@ -86,7 +92,6 @@ void loop() {
   else
   {  digitalWrite(relais2, reading4);}
   
-  int laser_in = analogRead(laserPWMin);
-  invertAnalogWrite(laserPWMout, laser_in); 
+  
   
 }
